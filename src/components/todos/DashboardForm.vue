@@ -1,14 +1,14 @@
 <template>
-<form>
 
-    <div class="m-auto my-8 h-screen w-80 p-1 text-center text-black shadow-2xl shadow-gray-950 hover:bg-slate-200" style="width:40%;">
 
-        <div class="flex bg-gray-200 ml-8 mr-8">
-            <img src="@/assets/logo.png" alt="Logo" class="h-10 w-10 rounded-full">
+    <div class="h-screen m-auto my-8 text-center text-black shadow-2xl bg-slate-200 w-80 shadow-gray-950 hover:bg-slate-200" style="width:40%;">
+
+        <div class="flex my-5 ml-8 mr-8 bg-gray-200">
+            <img src="@/assets/logo.png" alt="Logo" class="w-10 h-10 rounded-full">
 
             <p class="my-2 ml-3"> {{ name }}</p>
 
-            <button class="bg-red-500 text-white ml-auto rounded-md w-20 hover:bg-pink-950">Logout </button>
+            <button class="w-20 ml-auto text-white bg-red-500 rounded-md hover:bg-pink-950" @click.prevent="handleLogout">Logout </button>
 
         </div>
         <h1 class="my-4 text-3xl font-bold underline">My Todos</h1>
@@ -16,36 +16,34 @@
 
         <div class="flex ml-14 my-7">
 
-            <input type="text" class="ml-8 border border-gray-500 bg-white hover:border-2 w-80 rounded-md h-10" v-model="title" />
+            <input type="text" class="h-10 ml-8 bg-white border border-gray-500 rounded-md hover:border-2 w-80" v-model="title" />
 
-            <button class="bg-green-500 text-white ml-2 rounded-md w-20 hover:bg-green-950" @click.prevent="handleAddTodo">Add</button>
+            <button class="w-20 ml-2 text-white bg-green-500 rounded-md hover:bg-green-950" @click.prevent="handleAddTodo">Add</button>
 
         </div>
 
-        <div class="bg-white h-60">
+        <div class="m-auto overflow-y-auto bg-white shadow-2xl h-96 rounded-3xl hover:bg-slate-200" style="width:90%; height: 50vh;">
 
-            <div class="flex bg-gray hover:bg-cyan-100 ml-8 mr-8" v-for="todo in todos" :key="todo.id">
+            <div class="flex my-6 mb-2 ml-8 mr-8 border-black shadow-2xl shadow-neutral-900 rounded-s-3xl hover:bg-cyan-100" v-for="todo in todos" :key="todo.id">
 
-                
-                
-                <input type="checkbox" class="ml-2" v-model="todo.completed" @change="handleComplettion(todo)" />
+                <input type="checkbox" class="ml-2" @change.prevent="handleComplettion(todo)" :checked="todo.completed" v-model="todo.complete"/>
 
-                <p  v-if="todo.completed" class="my-2 ml-3 line-through">{{ todo.title }}</p>
-                <p  v-else class="my-2 ml-3">{{ todo.title }}</p>
+                <p v-if="todo.completed" class="my-3 ml-3 line-through">{{ todo.title }}</p>
+                <p v-else class="my-3 ml-3">{{ todo.title }}</p>
 
-
-                <button class="bg-red-500 text-white ml-auto rounded-md w-20  hover:bg-pink-950 ml- 8">Delete</button>
+                <button class="w-20 my-3 ml-auto mr-2 text-white bg-red-500 rounded-md hover:bg-pink-950 h-7" @click.prevent="handleDelete(todo)">Delete</button>
             </div>
         </div>
 
     </div>
 
-</form>
 </template>
 
-    
 <script>
 import axios from 'axios';
+import {
+    useAuthStore
+} from '@/store/auth'; 
 
 export default {
     name: 'DashboardForm',
@@ -55,7 +53,8 @@ export default {
             todos: [],
             title: '',
             loading: true, // Loading state
-        
+          
+
         }
     },
 
@@ -79,12 +78,12 @@ export default {
                 });
 
                 this.todos = response.data;
-         
+              
 
             } catch (error) {
                 this.showMessage('failed to fetch todos', 'text-red-700');
             } finally {
-                this.loading = false;
+                this.loading = '';
             }
 
         },
@@ -118,7 +117,7 @@ export default {
                 });
 
                 if (response.data.success) {
-                    this.showMessage(response.data.message, 'text-green-700');
+                    // this.showMessage(response.data.message, 'text-green-700');
                     this.title = '';
                     this.fetchTodos();
                 } else {
@@ -136,7 +135,7 @@ export default {
                 const token = localStorage.getItem('auth-token');
 
                 const response = await axios.put('http://localhost:8000/api/update-todos', {
-                    completed: todo.completed, // Send the updated completion status
+                    completed: todo.complete, // Send the updated completion status
                     id: todo.id, // Send the specific todo's ID
                 }, {
                     headers: {
@@ -147,6 +146,67 @@ export default {
                 if (response.data.success) {
                     // this.showMessage(response.data.message, 'text-green-700');
                     this.fetchTodos();
+                } else {
+                    this.showMessage(response.data.message, 'text-red-700');
+                }
+
+            } catch (error) {
+                this.showMessage(error.response.data.message, 'text-red-700');
+            }
+        },
+        // Handle deletion of todos
+
+        async handleDelete(todo){
+            try {
+                const token = localStorage.getItem('auth-token');
+
+                const response = await axios.delete('http://localhost:8000/api/delete-todos', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    data: {
+                        id: todo.id
+                    }
+                });
+
+                if (response.data.success) {
+                    // this.showMessage(response.data.message, 'text-green-700');
+                    this.fetchTodos();
+                } else {
+                    this.showMessage(response.data.message, 'text-red-700');
+                }
+
+            } catch (error) {
+                this.showMessage(error.response.data.message, 'text-red-700');
+            }
+            
+        },
+
+
+
+        //handle logout
+        async handleLogout(){
+            try {
+                const token = localStorage.getItem('auth-token');
+
+                const response = await axios.post('http://localhost:8000/api/logout', {}, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (response.data.success) {
+                    localStorage.removeItem('auth-token');
+                    localStorage.removeItem('userName');
+                  
+                    this.showMessage(response.data.message, 'text-green-700');
+                    setTimeout(() => {
+                        const authStore = useAuthStore(); // Access Pinia store here
+                        authStore.logout(); // Call login action
+                        this.$router.push({
+                            name: 'login'
+                        });
+                    }, 1000);
                 } else {
                     this.showMessage(response.data.message, 'text-red-700');
                 }
