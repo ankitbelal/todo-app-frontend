@@ -3,7 +3,9 @@
 
     <div class="h-screen m-auto my-8 text-center text-black shadow-2xl bg-slate-200 w-80 shadow-gray-950 hover:bg-slate-200" style="width:40%;">
 
-        <div class="flex my-5 ml-8 mr-8 bg-gray-200">
+        <div class="flex py-10 my-5 ml-8 mr-8 bg-gray-200">
+
+            
             <img src="@/assets/logo.png" alt="Logo" class="w-10 h-10 rounded-full">
 
             <p class="my-2 ml-3"> {{ name }}</p>
@@ -11,6 +13,8 @@
             <button class="w-20 ml-auto text-white bg-red-500 rounded-md hover:bg-pink-950" @click.prevent="handleLogout">Logout </button>
 
         </div>
+
+        
         <h1 class="my-4 text-3xl font-bold underline">My Todos</h1>
         <h1 ref="message" class=""></h1>
 
@@ -23,12 +27,14 @@
         </div>
 
         <div class="m-auto overflow-y-auto bg-white shadow-2xl h-96 rounded-3xl hover:bg-slate-200" style="width:90%; height: 50vh;">
+            <div v-if="todos.length===0" class="m-auto my-24 font-bold text-center shadow-md"> No tasks available! Create new</div>
 
-            <div class="flex my-6 mb-2 ml-8 mr-8 border-black shadow-2xl shadow-neutral-900 rounded-s-3xl hover:bg-cyan-100" v-for="todo in todos" :key="todo.id">
-
+            <div v-else class="flex my-6 mb-2 ml-8 mr-8 border-black shadow-2xl shadow-neutral-900 rounded-s-3xl hover:bg-cyan-100" v-for="todo in todos" :key="todo.id">
+  
                 <input type="checkbox" class="ml-2" @change.prevent="handleComplettion(todo)" :checked="todo.completed" v-model="todo.complete"/>
-
+                
                 <p v-if="todo.completed" class="my-3 ml-3 line-through">{{ todo.title }}</p>
+       
                 <p v-else class="my-3 ml-3">{{ todo.title }}</p>
 
                 <button class="w-20 my-3 ml-auto mr-2 text-white bg-red-500 rounded-md hover:bg-pink-950 h-7" @click.prevent="handleDelete(todo)">Delete</button>
@@ -71,7 +77,7 @@ export default {
 
                 const token = localStorage.getItem('auth-token');
 
-                const response = await axios.get("http://localhost:8000/api/all-todos", {
+                const response = await axios.get("http://51.21.161.186/api/all-todos", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -108,7 +114,7 @@ export default {
             try {
                 const token = localStorage.getItem('auth-token');
 
-                const response = await axios.post('http://localhost:8000/api/create-todos', {
+                const response = await axios.post('http://51.21.161.186/api/create-todos', {
                     title: this.title,
                 }, {
                     headers: {
@@ -134,7 +140,7 @@ export default {
             try {
                 const token = localStorage.getItem('auth-token');
 
-                const response = await axios.put('http://localhost:8000/api/update-todos', {
+                const response = await axios.put('http://51.21.161.186/api/update-todos', {
                     completed: todo.complete, // Send the updated completion status
                     id: todo.id, // Send the specific todo's ID
                 }, {
@@ -160,7 +166,7 @@ export default {
             try {
                 const token = localStorage.getItem('auth-token');
 
-                const response = await axios.delete('http://localhost:8000/api/delete-todos', {
+                const response = await axios.delete('http://51.21.161.186/api/delete-todos', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },
@@ -189,7 +195,7 @@ export default {
             try {
                 const token = localStorage.getItem('auth-token');
 
-                const response = await axios.post('http://localhost:8000/api/logout', {}, {
+                const response = await axios.post('http://51.21.161.186/api/logout', {}, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

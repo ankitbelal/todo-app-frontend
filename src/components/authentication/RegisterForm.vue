@@ -1,26 +1,26 @@
 <template>
 <form>
-    <div class="m-auto my-8 h-108 w-80 p-1 text-center text-black shadow-2xl shadow-gray-950 hover:bg-slate-200" style="width:28%;">
+    <div class="p-1 m-auto my-8 text-center text-black shadow-2xl h-108 w-80 shadow-gray-950 hover:bg-slate-200" style="width:28%;">
         <h1 class="my-2.5 text-4xl font-bold">Signup</h1>
 
-        <div class="m-auto grid w-2xs p-3 text-left ml-4">
+        <div class="grid p-3 m-auto ml-4 text-left w-2xs">
             <h1 v-show="showMsg" ref="message" class=""></h1>
 
             <label for="Name" class="my-1.5 ml-5 font-medium">Full Name</label>
-            <input type="text" name="Name" class="ml-4 rounded-md border border-gray-500 shadow hover:border-2 w-80" v-model="name" />
+            <input type="text" name="Name" class="ml-4 border border-gray-500 rounded-md shadow hover:border-2 w-80" v-model="name" />
 
             <label for="email" class="my-1.5 ml-5 font-medium">Email</label>
-            <input type="email" name="email" class="ml-4 rounded-md border border-gray-500 shadow hover:border-2 w-80" v-model="email" />
+            <input type="email" name="email" class="ml-4 border border-gray-500 rounded-md shadow hover:border-2 w-80" v-model="email" />
 
             <label for="" class="my-1.5 ml-5 font-medium">Password</label>
-            <input type="password" name="password" class="ml-4 rounded-md border border-gray-500 bg-white hover:border-2 w-80" v-model="password" />
+            <input type="password" name="password" class="ml-4 bg-white border border-gray-500 rounded-md hover:border-2 w-80" v-model="password" />
 
             <label for="" class="my-1.5 ml-5 font-medium">Confirm Password</label>
-            <input type="password" name="confirmpassword" class="ml-4 rounded-md border border-gray-500 bg-white hover:border-2 w-80" v-model="confirmPassword" />
+            <input type="password" name="confirmpassword" class="ml-4 bg-white border border-gray-500 rounded-md hover:border-2 w-80" v-model="confirmPassword" />
 
-            <button class="m-auto my-5 w-20 rounded-md bg-cyan-600 p-1 text-white shadow-2xl hover:border-red-300 hover:bg-blue-800" @click.prevent="handleRegister">Register</button>
+            <button class="w-20 p-1 m-auto my-5 text-white rounded-md shadow-2xl bg-cyan-600 hover:border-red-300 hover:bg-blue-800" @click.prevent="handleRegister">Register</button>
 
-            <router-link to="/" class="m-auto font-medium text-emerald-700 italic hover:text-pink-800">Already have an account? Login </router-link>
+            <router-link to="/" class="m-auto italic font-medium text-emerald-700 hover:text-pink-800">Already have an account? Login </router-link>
         </div>
     </div>
 </form>
@@ -59,7 +59,7 @@ export default {
             }
 
             try {
-                const response = await axios.post('http://localhost:8000/api/signup', {
+                const response = await axios.post('http://51.21.161.186/api/signup', {
                     name: this.name,
                     password: this.password,
                     email: this.email,

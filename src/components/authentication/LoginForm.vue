@@ -51,7 +51,7 @@ export default {
             }
 
             try {
-                const response = await axios.post('http://localhost:8000/api/login', {
+                const response = await axios.post('http://51.21.161.186/api/login', {
                     email: this.email,
                     password: this.password,
                 });
