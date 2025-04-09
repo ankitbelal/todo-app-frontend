@@ -1,19 +1,31 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { useAuthStore } from "@/store/auth"; // Import the auth store
+import { useAuthStore } from "@/store/auth"; // Auth store
 
-import LoginForm from "@/components/authentication/LoginForm.vue";
-import RegisterForm from "@/components/authentication/RegisterForm.vue";
-import DashboardForm from "@/components/todos/DashboardForm.vue";
+
+// implementatio of lazy loading
+
+
 
 const routes = [
-  { path: "/", component: LoginForm, name: "login" },
-  { path: "/register", component: RegisterForm, name: "register" },
+  {
+    path: "/",
+    name: "login",
+    component: () => import("@/components/authentication/LoginForm.vue"),
+  },
+
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("@/components/authentication/RegisterForm.vue"),
+  },
+
   {
     path: "/dashboard",
-    component: DashboardForm,
     name: "dashboard",
-    meta: { requiresAuth: true }, // Protect this route
+    component: () => import("@/components/todos/DashboardForm.vue"),
+    meta: { requiresAuth: true },
   },
+  
 ];
 
 const router = createRouter({
@@ -21,15 +33,18 @@ const router = createRouter({
   routes,
 });
 
-// Navigation Guard to protect routes
+// Navigation Guard
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
-  authStore.checkAuth(); // Ensure auth state is up-to-date
+  authStore.checkAuth(); // Refresh auth state
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next({ name: "login" }); // Redirect to login if not authenticated
-  } else {
-    next(); // Proceed to the route
+  if (to.meta.requiresAuth && !authStore.isAuthenticated)
+     {
+    next({ name: "login" });
+    }
+   else 
+   {
+    next();
   }
 });
 
