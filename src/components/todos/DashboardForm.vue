@@ -198,8 +198,12 @@
       if (response.data.success) {
         localStorage.removeItem('auth-token')
         localStorage.removeItem('userName')
+
+        onMounted(() => {
+          showMessage(response.data.message, 'text-green-700')
+  })
   
-        showMessage(response.data.message, 'text-green-700')
+      
   
         setTimeout(() => {
           const authStore = useAuthStore()
