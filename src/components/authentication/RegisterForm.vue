@@ -53,6 +53,10 @@
   
   const showMsg = ref(false)
   const message = ref(null) //variable to hold the reference of the message showing tag
+
+  // for api variable form .env
+
+  const api= process.env.VUE_APP_API_BASE_URL
   
   // success and errro messge
   const showMessage = (msgText, color) => {
@@ -87,7 +91,7 @@
     }
   
     try {
-      const response = await axios.post('http://51.21.161.186/api/signup', {
+      const response = await axios.post(`${api}/signup`, {
         name: name.value,
         email: email.value,
         password: password.value,

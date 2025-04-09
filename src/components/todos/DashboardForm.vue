@@ -191,7 +191,7 @@
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem('auth-token')
-      const response = await axios.post('http://51.21.161.186/api/logout', {}, {
+      const response = await axios.post(`${api}/logout`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       })
   
