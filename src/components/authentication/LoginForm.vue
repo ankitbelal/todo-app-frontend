@@ -50,6 +50,8 @@
   const message = ref('')
   const messageRef = ref(null) // hold the reference of the tag to show the message dynamically
   const router = useRouter()
+
+  const api = process.env.VUE_APP_API_BASE_URL // api variable from .env file
   
 
 
@@ -85,7 +87,7 @@
     //  api fetch for login
   
     try {
-      const response = await axios.post('http://51.21.161.186/api/login', {
+      const response = await axios.post(`${api}/login`, {
         email: email.value,
         password: password.value,
       })

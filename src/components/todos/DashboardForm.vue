@@ -72,6 +72,10 @@
   const todos = ref([])
   const message = ref(null)
   const router = useRouter()
+
+  // using the  .env file for api or backend port
+  const api = process.env.VUE_APP_API_BASE_URL
+
   
   // Fetch todos at start
   onMounted(() => {
@@ -95,7 +99,7 @@
   const fetchTodos = async () => {
     try {
       const token = localStorage.getItem('auth-token')
-      const response = await axios.get('http://51.21.161.186/api/all-todos', {
+      const response = await axios.get(`${api}/all-todos`, {
         headers: { Authorization: `Bearer ${token}` }
       })
   
@@ -117,8 +121,7 @@
   
     try {
       const token = localStorage.getItem('auth-token')
-      const response = await axios.post(
-        'http://51.21.161.186/api/create-todos',
+      const response = await axios.post(`${api}/create-todos`,
         { title: title.value },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -145,7 +148,8 @@
     try {
       const token = localStorage.getItem('auth-token')
       const response = await axios.put(
-        'http://51.21.161.186/api/update-todos',
+        
+        `${api}/update-todos`,
         {
           completed: !todo.completed,
           id: todo.id
@@ -168,7 +172,7 @@
   const handleDelete = async (todo) => {
     try {
       const token = localStorage.getItem('auth-token')
-      const response = await axios.delete('http://51.21.161.186/api/delete-todos', {
+      const response = await axios.delete(`${api}delete-todos`, {
         headers: { Authorization: `Bearer ${token}` },
         data: { id: todo.id }
       })
@@ -187,15 +191,19 @@
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem('auth-token')
-      const response = await axios.post('http://51.21.161.186/api/logout', {}, {
+      const response = await axios.post(`${api}/logout`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       })
   
       if (response.data.success) {
         localStorage.removeItem('auth-token')
         localStorage.removeItem('userName')
+
+        onMounted(() => {
+          showMessage(response.data.message, 'text-green-700')
+  })
   
-        showMessage(response.data.message, 'text-green-700')
+      
   
         setTimeout(() => {
           const authStore = useAuthStore()
